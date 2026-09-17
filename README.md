@@ -10,7 +10,7 @@ REST API для списка задач на ASP.NET Core: пагинация, �
 - Создание задачи с валидацией длины и обязательности заголовка
 - Изменение статуса и текста задачи по отдельности (`PATCH`)
 - Удаление одной задачи и массовое удаление всех завершённых
-- Интерактивная документация API на Scalar — можно сразу отправить запрос из браузера
+- Интерактивная документация API на Scalar: можно сразу отправить запрос из браузера
 
 ![Пример запроса и ответа](docs/screenshots/02-create-task-endpoint.png)
 
@@ -20,13 +20,13 @@ REST API для списка задач на ASP.NET Core: пагинация, �
 
 ## Запуск
 
-Нужен PostgreSQL. Быстрее всего — контейнером:
+Нужен PostgreSQL. Проще всего поднять его контейнером:
 
 ```bash
 docker run -d --name todo-pg -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=todo -p 5432:5432 postgres:16-alpine
 ```
 
-Строка подключения — в `appsettings.Development.json` (в репозитории её нет, создайте сами):
+Строка подключения указывается в `appsettings.Development.json` (в репозитории её нет, создайте сами):
 
 ```json
 {
@@ -40,12 +40,12 @@ docker run -d --name todo-pg -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=post
 dotnet run
 ```
 
-В Development-режиме миграции применяются автоматически при старте. API — на `http://localhost:5080`, документация — на `/scalar/v1`.
+В Development-режиме миграции применяются автоматически при старте. API работает на `http://localhost:5080`, документация доступна на `/scalar/v1`.
 
 ## Архитектура
 
 - Controller → Service → Repository, каждый слой отвечает только за свою зону: контроллер не знает про EF Core, репозиторий не знает про DTO
-- Обновления и удаления через `ExecuteUpdateAsync`/`ExecuteDeleteAsync` — без лишней загрузки сущности в память там, где она не нужна
+- Обновления и удаления идут через `ExecuteUpdateAsync`/`ExecuteDeleteAsync`, без лишней загрузки сущности в память там, где она не нужна
 - Единая обёртка ответа (`BaseSuccessResponse<T>` / `CustomSuccessResponse<T>`) вместо произвольных форматов на каждый эндпоинт
 
 ## Статус
